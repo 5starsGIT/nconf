@@ -91,9 +91,16 @@
     syncthing
     gnome.gnome-disk-utility
     maim
+    gh
 
     libimobiledevice
     ifuse
+
+    (lutris.override {
+      extraLibraries = pkgs: [
+        gnome3.adwaita-icon-theme
+      ];
+    })
   ];
 
   services.picom.enable = true;
