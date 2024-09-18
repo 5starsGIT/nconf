@@ -48,6 +48,23 @@
 
   # Enable CUPS to print documents.
   services.printing.enable = true;
+  services.avahi = {
+    enable = true;
+    nssmdns4 = true;
+    openFirewall = true;
+    publish = {
+      enable = true;
+      userServices = true;
+    };
+  };
+  services.printing = {
+    listenAddresses = [ "*:631" ];
+    allowFrom = [ "all" ];
+    browsing = true;
+    defaultShared = true;
+    openFirewall = true;
+  };
+
 
   # Enable sound with pipewire.
   sound.enable = true;
@@ -88,6 +105,7 @@
     dmenu
     j4-dmenu-desktop
     xfce.xfce4-pulseaudio-plugin
+    xfce.xfce4-timer-plugin
     syncthing
     gnome.gnome-disk-utility
     maim
@@ -99,8 +117,22 @@
     (lutris.override {
       extraLibraries = pkgs: [
         gnome3.adwaita-icon-theme
+        wine
       ];
     })
+
+    evince
+    libreoffice
+    gnumeric
+    onlyoffice-bin
+
+    obsidian
+
+    #printing
+    foomatic-db
+    foomatic-db-ppds
+    foomatic-db-nonfree
+    foomatic-db-ppds-withNonfreeDb
   ];
 
   services.picom.enable = true;
@@ -136,8 +168,8 @@
     mountPoint = "/home/alex/Drive2";
     fsType = "ext4";
     options = [
-	"rw"
-	"exec"
+      "rw"
+      "exec"
     ];
   };
 
@@ -147,7 +179,8 @@
     package = pkgs.usbmuxd2;
   };
 
-  boot.kernelPatches = [ {
+/*
+    boot.kernelPatches = [ {
     name = "customUsbPollrate";
     patch = builtins.fetchurl { 
       url = "https://raw.githubusercontent.com/GloriousEggroll/Linux-Pollrate-Patch/main/pollrate.patch";
@@ -158,4 +191,5 @@
   boot.kernelParams = [
     "usbcore.interrupt_interval_override=1532:007b:1,0c45:652f:2,0e6f:0185:1"
   ]; 
+*/
 }
