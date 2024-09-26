@@ -42,6 +42,7 @@
 
   # Disable mouse acceleration
   services.libinput.mouse.accelProfile = "flat";
+  services.libinput.mouse.middleEmulation = false;
 
   # Configure console keymap
   console.useXkbConfig = true;
@@ -100,7 +101,8 @@
     wget
     xclip
     git
-    firefox
+    firefox-beta
+    chromium
     spotify
     dmenu
     j4-dmenu-desktop
@@ -110,6 +112,7 @@
     gnome.gnome-disk-utility
     maim
     gh
+    yt-dlp
 
     libimobiledevice
     ifuse
@@ -133,6 +136,7 @@
     foomatic-db-ppds
     foomatic-db-nonfree
     foomatic-db-ppds-withNonfreeDb
+    molsketch
   ];
 
   services.picom.enable = true;
