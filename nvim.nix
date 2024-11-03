@@ -26,6 +26,10 @@ syntax on                   " syntax highlighting
 set mouse=a                 " enable mouse click
 filetype plugin on
 set ttyfast                 " Speed up scrolling in Vim
+set scrolloff=8
+
+let mapleader=" "
+nnoremap <Leader>pv :Ex<CR>
       '';
     };
   };

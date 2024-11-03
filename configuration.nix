@@ -2,7 +2,7 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, pkgs, ... }:
+{ config, pkgs, stable, ... }:
 
 {
 
@@ -33,6 +33,17 @@
   # Enable the XFCE Desktop Environment.
   services.xserver.displayManager.lightdm.enable = true;
   services.xserver.desktopManager.xfce.enable = true;
+  services.xserver.windowManager.dwm = {
+      enable = true;
+      package = pkgs.dwm.overrideAttrs rec {
+        src = pkgs.fetchgit {
+          url = "https://github.com/5starsGIT/dwm-desktop";
+          rev = "9bdf5bcaf0ffa5eb185dfece0120fb2896dd67fd";
+          hash = "sha256-fxgylFX7JK89aBQXt96z2M0MtBHKxmwF0Hv74iEkF8Q=";
+        };
+      };
+  };
+  services.displayManager.defaultSession = "none+dwm";
 
   # Configure keymap in X11
   services.xserver.xkb = {
@@ -48,7 +59,7 @@
   console.useXkbConfig = true;
 
   # Enable CUPS to print documents.
-  services.printing.enable = true;
+/*  services.printing.enable = true;
   services.avahi = {
     enable = true;
     nssmdns4 = true;
@@ -65,10 +76,9 @@
     defaultShared = true;
     openFirewall = true;
   };
-
+*/
 
   # Enable sound with pipewire.
-  sound.enable = true;
   hardware.pulseaudio.enable = false;
   security.rtkit.enable = true;
   services.pipewire = {
@@ -109,7 +119,7 @@
     xfce.xfce4-pulseaudio-plugin
     xfce.xfce4-timer-plugin
     syncthing
-    gnome.gnome-disk-utility
+    gnome-disk-utility
     maim
     gh
     yt-dlp
@@ -119,7 +129,7 @@
 
     (lutris.override {
       extraLibraries = pkgs: [
-        gnome3.adwaita-icon-theme
+        adwaita-icon-theme
         wine
       ];
     })
@@ -137,6 +147,13 @@
     foomatic-db-nonfree
     foomatic-db-ppds-withNonfreeDb
     molsketch
+
+    ani-cli
+
+    pavucontrol
+    playerctl
+    pamixer
+    feh
   ];
 
   services.picom.enable = true;
@@ -145,7 +162,7 @@
 
   xdg.portal = {
     enable = true;
-    extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
+    extraPortals = [ stable.xdg-desktop-portal-gtk ];
   };
 
   services.flatpak = {
@@ -154,6 +171,7 @@
       "com.discordapp.Discord"
       "com.ktechpit.orion"
       "net.davidotek.pupgui2"
+      "dev.vencord.Vesktop"
     ];
   };
 
@@ -183,17 +201,49 @@
     package = pkgs.usbmuxd2;
   };
 
-/*
-    boot.kernelPatches = [ {
-    name = "customUsbPollrate";
-    patch = builtins.fetchurl { 
-      url = "https://raw.githubusercontent.com/GloriousEggroll/Linux-Pollrate-Patch/main/pollrate.patch";
-      sha256 = "0cgvra1qs96awwxv78z3nmxw8gqjxic91hhjs7xc8wwls425m36a";
-    };
-  } ];
+  environment.extraInit = ''
+    xset s off -dpms
+  '';
+
+  boot.kernelPatches = [ 
+    {
+      name = "customUsbPollrate";
+      patch = builtins.fetchurl { 
+        url = "https://raw.githubusercontent.com/GloriousEggroll/Linux-Pollrate-Patch/main/pollrate.patch";
+        sha256 = "0cgvra1qs96awwxv78z3nmxw8gqjxic91hhjs7xc8wwls425m36a";
+      }; 
+    } 
+  ];
 
   boot.kernelParams = [
     "usbcore.interrupt_interval_override=1532:007b:1,0c45:652f:2,0e6f:0185:1"
-  ]; 
-*/
+  ];  
+
+  swapDevices = [{
+    device = "/var/lib/swapfile";
+    size = 8*1024;
+  }];
+
+  services.xserver.exportConfiguration = true;
+
+  services.xserver.screenSection = ''
+    DefaultDepth    24
+    Option         "Stereo" "0"
+    Option         "nvidiaXineramaInfoOrder" "DP-2"
+    Option         "metamodes" "2560x1440_165 +0+0"
+    Option         "SLI" "Off"
+    Option         "MultiGPU" "Off"
+    Option         "BaseMosaic" "off"
+  '';
+
+  services.xserver.extraDisplaySettings = ''
+    Depth 24
+  '';
+
+  services.xserver.monitorSection = ''
+    HorizSync       242.0 - 242.0
+    VertRefresh     48.0 - 165.0
+    Option         "DPMS"
+  '';
+
 }

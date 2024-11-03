@@ -1,10 +1,7 @@
 { config, pkgs, ... }:
 
 {
-	hardware.opengl = {
-		enable = true;
-		driSupport = true;
-	};
+  hardware.graphics.enable = true;
 
 	services.xserver.videoDrivers = [ "nvidia" ];
 
